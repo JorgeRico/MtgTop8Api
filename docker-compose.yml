@@ -1,0 +1,22 @@
+services:
+  fastapi:
+    container_name: fastapi
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    tty: true
+    volumes:
+      - ./fastapi:/app
+    networks:
+      - app-network
+
+volumes:
+  app_db_volume:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
+    name: app-network
