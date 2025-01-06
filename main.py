@@ -1,5 +1,4 @@
 from fastapi import FastAPI, HTTPException, Path
-from db.db import Db
 from typing import Any
 from db.queries import Queries
 from models.league import League
