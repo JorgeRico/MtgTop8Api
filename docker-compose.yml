@@ -4,6 +4,12 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
+    environment:
+      - HOSTNAME=app-database
+      - PORT=3308
+      - DATABASE=app-database
+      - USER=user
+      - PASSWORD=password
     ports:
       - "8000:8000"
     tty: true

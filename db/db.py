@@ -1,14 +1,14 @@
 import mysql.connector
 from mysql.connector import Error
-
+import os
 class Db:
 
     def __init__(self):
-        self.hostName     = 'app-database'
-        self.portName     = '3308'
-        self.databaseName = 'app-database'
-        self.userName     = 'user'
-        self.passwordText = 'password'
+        self.hostName     = os.getenv('HOSTNAME')
+        self.portName     = os.getenv('PORT')
+        self.databaseName = os.getenv('DATABASE')
+        self.userName     = os.getenv('USER')
+        self.passwordText = os.getenv('PASSWORD')
 
     def connect(self):
         try:
