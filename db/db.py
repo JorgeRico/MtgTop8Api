@@ -13,10 +13,11 @@ class Db:
     def connect(self):
         try:
             return mysql.connector.connect(
-                host     = self.hostName,
-                user     = self.userName,
-                password = self.passwordText,
-                database = self.databaseName
+                host        = self.hostName,
+                user        = self.userName,
+                password    = self.passwordText,
+                database    = self.databaseName,
+                auth_plugin = 'mysql_native_password'
             )   
         except Error as e:
             print("Error while connecting to MySQL %s" %e)
