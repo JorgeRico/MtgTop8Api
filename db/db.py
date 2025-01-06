@@ -1,4 +1,4 @@
-import pymysql.cursors
+import mysql.connector
 import os
 class Db:
 
@@ -11,14 +11,14 @@ class Db:
 
     def connect(self):
         try:
-            return pymysql.connect(
+            return mysql.connector.connect(
                 host        = self.hostName,
                 user        = self.userName,
                 password    = self.passwordText,
                 database    = self.databaseName,
-                cursorclass = pymysql.cursors.DictCursor
+                auth_plugin = 'mysql_native_password'
             )   
-        except Exception as e:
+        except mysql.connector.Error as e:
             print("Error while connecting to MySQL %s" %e)
     
     def getSelectListResultQuery(self, conn, query):
@@ -29,7 +29,7 @@ class Db:
             conn.close()
 
             return result
-        except Exception as e:
+        except mysql.connector.Error as e:
             print("Error while connecting to MySQL %s" %e)
     
     def getSelectSingleResultQuery(self, conn, query):
@@ -40,5 +40,5 @@ class Db:
             conn.close()
 
             return result
-        except Exception as e:
+        except mysql.connector.Error as e:
             print("Error while connecting to MySQL %s" %e)
