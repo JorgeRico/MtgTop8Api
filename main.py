@@ -33,10 +33,20 @@ async def index():
 # ---------------------------------------------
 # League endpoints
 # ---------------------------------------------
-@app.get("/leagues", response_model=list[League], status_code=HTTP_200, description="Leagues info")
+@app.get("/leagues/current", response_model=list[League], status_code=HTTP_200, description="Leagues info")
 async def getLeagueData() -> Any:
     query  = Queries()
-    result = query.getLeagues()
+    result = query.getCurrentLeagues()
+
+    if result is None or id is None:
+        raise HTTPException(status_code=HTTP_404, detail="League not found")
+
+    return result
+
+@app.get("/leagues/past", response_model=list[League], status_code=HTTP_200, description="Leagues info")
+async def getLeagueData() -> Any:
+    query  = Queries()
+    result = query.getPastLeagues()
 
     if result is None or id is None:
         raise HTTPException(status_code=HTTP_404, detail="League not found")
