@@ -13,16 +13,16 @@ app.include_router(router_decks.router)
 app.include_router(router_leagues.router)
 app.include_router(router_players.router)
 
-origins = ["*"]
+# origins = ["*"]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-    expose_headers=["*"]
-)
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=origins,
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+#     expose_headers=["*"]
+# )
 
 @app.get("/health", status_code=HTTP_200, description="Health endpoint")
 async def index():
