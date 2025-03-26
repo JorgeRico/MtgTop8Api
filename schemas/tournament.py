@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from models.player import PlayerData
+from schemas.player import PlayerData
 
 class Tournament(BaseModel):
     id       : int

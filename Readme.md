@@ -5,6 +5,9 @@ Python fastapi
 - docker-compose build
 - docker-compose up -d
 
+#### execute - no docker environment
+- uvicorn app:app
+
 #### Api Swagger
 - http://localhost:8000/docs
 

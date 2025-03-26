@@ -1,6 +1,6 @@
 from pydantic import BaseModel
-from models.card import TopCard
-from models.player import PlayerStats
+from schemas.card import TopCard
+from schemas.player import PlayerStats
 
 STATS_LIMIT = 15
 

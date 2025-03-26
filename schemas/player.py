@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from models.card import Card
+from schemas.card import Card
 
 class Player(BaseModel):
     id       : int 
