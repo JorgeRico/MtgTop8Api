@@ -10,6 +10,7 @@ Python fastapi
 
 #### Api Swagger
 - http://localhost:8000/docs
+- http://localhost:8000/redoc
 
 #### References
 - https://fastapi.tiangolo.com/

@@ -3,10 +3,23 @@ from errors.errors import notFound
 from codes.codes import HTTP_200
 from starlette.middleware.cors import CORSMiddleware
 from routers import router_decks, router_leagues, router_players, router_tournaments
+import os
 
-app = FastAPI(exception_handlers={
-    404: notFound
-})
+if os.getenv('ENV') == 'development': 
+    app = FastAPI(
+        exception_handlers={
+            404: notFound,
+        }
+    )
+else:
+    app = FastAPI(
+        docs_url=None,
+        redoc_url=None,
+        openapi_url = None,
+        exception_handlers={
+            404: notFound,
+        }
+    )
 
 app.include_router(router_tournaments.router)
 app.include_router(router_decks.router)
