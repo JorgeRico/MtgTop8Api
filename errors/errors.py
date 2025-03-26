@@ -12,7 +12,7 @@ async def notFound(request: Request, exc: HTTPException):
                         "path",
                         "id"
                     ],
-                    "msg": f"{exc.detail}",
+                    "msg": f"Not found",
                     "input": ""
                 }
             ]
