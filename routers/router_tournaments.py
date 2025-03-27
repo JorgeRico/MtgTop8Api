@@ -1,22 +1,24 @@
 from fastapi import APIRouter, HTTPException, Path
 from schemas.tournament import Tournament, TournamentData
 from queries.tournaments import TournamentQueries
+from queries.decks import DeckQueries
 from codes.codes import HTTP_200, HTTP_404
 from typing import Any
 from schemas.player import Player
 from schemas.deck import Deck
 from schemas.stats import TournamentStats, CardStats, STATS_LIMIT
 from schemas.card import MAINDECK_CARD, SIDEBOARD_CARD
-from routers.router_decks import getDeckCards
+from cachetools import cached, TTLCache
 
 router = APIRouter(
     prefix = "/tournaments",
     tags   = ["Tournaments"]
 )
 
-# ---------------------------------------------
-# Tournament endpoints
-# ---------------------------------------------
+cache = TTLCache(maxsize=100, ttl=300)  # Cache size of 100 items, expires after 5 minutes
+
+
+@cached(cache)
 @router.get("/{id}", response_model=Tournament, status_code=HTTP_200, description="Tournament info")
 async def getTournament(id: int = Path(gt = 0, title="Id Tournament", description="Tournament resource identifier")) -> Any:
     query  = TournamentQueries()
@@ -28,6 +30,7 @@ async def getTournament(id: int = Path(gt = 0, title="Id Tournament", descriptio
     return result
 
 
+@cached(cache)
 @router.get("/{id}/players", response_model=list[Player], status_code=HTTP_200, description="Tournament players list")
 async def getTournamentPlayers(id: int = Path(gt = 0, title="Id Tournament", description="Tournament resource identifier")) -> Any:
     query  = TournamentQueries()
@@ -39,6 +42,7 @@ async def getTournamentPlayers(id: int = Path(gt = 0, title="Id Tournament", des
     return result
 
 
+@cached(cache)
 @router.get("/{id}/decks", response_model=list[Deck], status_code=HTTP_200, description="Tournament decks")
 async def getTournamentDecks(id: int = Path(gt = 0, title="Id Tournament", description="Tournament resource identifier")) -> Any:
     query  = TournamentQueries()
@@ -50,13 +54,17 @@ async def getTournamentDecks(id: int = Path(gt = 0, title="Id Tournament", descr
     return result
 
 
+@cached(cache)
 @router.get("/{id}/data", response_model=TournamentData, status_code=HTTP_200, description="Tournament info, players and decks")
 async def getTournamentData(id: int = Path(gt = 0, title="Id Tournament", description="Tournament resource identifier")) -> Any:
-    tournament = await getTournament(str(id))
-    players    = await getTournamentPlayers(str(id))
+    query      = TournamentQueries()
+    tournament = query.getTournaments(str(id))
+    query      = TournamentQueries()
+    players    = query.getTournamentPlayers(str(id))
 
     for player in players:
-        cards = await getDeckCards(player['idDeck'])
+        query = DeckQueries()
+        cards = query.getDeckCards(player['idDeck'])
         player.update({'deck' : cards})
 
     if tournament == None:
@@ -67,9 +75,7 @@ async def getTournamentData(id: int = Path(gt = 0, title="Id Tournament", descri
     return TournamentData(tournament=tournament, players=players)
 
 
-# ---------------------------------------------
-# Tournament Stats endpoints
-# ---------------------------------------------
+@cached(cache)
 @router.get("/{id}/stats", response_model=TournamentStats, status_code=HTTP_200, description="Tournament stats")
 async def getTournamentStats(id: int = Path(gt = 0, title="Id Tournament", description="Tournament resource identifier")):
     query = TournamentQueries()
@@ -90,9 +96,7 @@ async def getTournamentStats(id: int = Path(gt = 0, title="Id Tournament", descr
     return TournamentStats(top10=top10, mb=mb, sb=sb)
 
 
-# ---------------------------------------------
-# Tournament Card Stats endpoints
-# ---------------------------------------------
+@cached(cache)
 @router.get("/{id}/cards/stats", response_model=CardStats, status_code=HTTP_200, description="Tournament Card Stats")
 async def getTournamentCards(id: int = Path(gt = 0, title="Id Tournament", description="Tournament resource identifier")):
     query         = TournamentQueries()

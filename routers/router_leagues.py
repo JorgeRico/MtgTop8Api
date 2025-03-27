@@ -6,15 +6,17 @@ from schemas.stats import LeagueStats, CardStats, STATS_LIMIT
 from schemas.card import MAINDECK_CARD, SIDEBOARD_CARD
 from schemas.tournament import Tournament
 from queries.leagues import LeagueQueries
+from cachetools import cached, TTLCache
 
 router = APIRouter(
     prefix = "/leagues",
     tags   = ["Leagues"]
 )
 
-# ---------------------------------------------
-# League endpoints
-# ---------------------------------------------
+cache = TTLCache(maxsize=100, ttl=300)  # Cache size of 100 items, expires after 5 minutes
+
+
+@cached(cache)
 @router.get("/current", response_model=list[League], status_code=HTTP_200, description="Leagues info")
 async def getLeagueData() -> Any:
     query  = LeagueQueries()
@@ -26,6 +28,7 @@ async def getLeagueData() -> Any:
     return result
 
 
+@cached(cache)
 @router.get("/past", response_model=list[League], status_code=HTTP_200, description="Leagues info")
 async def getLeagueData() -> Any:
     query  = LeagueQueries()
@@ -37,6 +40,7 @@ async def getLeagueData() -> Any:
     return result
 
 
+@cached(cache)
 @router.get("/{id}", response_model=League, status_code=HTTP_200, description="League info")
 async def getLeagueData(id: int = Path(gt = 0, title="Id League", description="League resource identifier")) -> Any:
     query  = LeagueQueries()
@@ -48,6 +52,7 @@ async def getLeagueData(id: int = Path(gt = 0, title="Id League", description="L
     return result
 
 
+@cached(cache)
 @router.get("/{id}/tournaments", response_model=list[Tournament], status_code=HTTP_200, description="League Tournaments list")
 async def getLeagueTournamentsData(id: int = Path(gt = 0, title="Id League", description="League resource identifier"), skip: int = 0, limit: int = 10) -> Any:
     query  = LeagueQueries()
@@ -59,9 +64,7 @@ async def getLeagueTournamentsData(id: int = Path(gt = 0, title="Id League", des
     return result
 
 
-# ---------------------------------------------
-# League Stats endpoints
-# ---------------------------------------------
+@cached(cache)
 @router.get("/{id}/stats", response_model=LeagueStats, status_code=HTTP_200, description="League Stats")
 async def getTop10LeagueCards(id: int = Path(gt = 0, title="Id League", description="League resource identifier")):
     query = LeagueQueries()
@@ -91,9 +94,7 @@ async def getTop10LeagueCards(id: int = Path(gt = 0, title="Id League", descript
     return LeagueStats(top10=top10, mb=mb, sb=sb, players=players)
 
 
-# ---------------------------------------------
-# League Cards Stats endpoints
-# ---------------------------------------------
+@cached(cache)
 @router.get("/{id}/cards/stats", response_model=CardStats, status_code=HTTP_200, description="League Cards Stats")
 async def getLeagueCards(id: int = Path(gt = 0, title="Id League", description="League resource identifier")):
     query         = LeagueQueries()
