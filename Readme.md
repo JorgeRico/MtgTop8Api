@@ -1,17 +1,22 @@
 # Mtg Tournament Api
+
 Python fastapi
 
-#### Container build
+## Container build
+
 - docker-compose build
 - docker-compose up -d
 
-#### execute - no docker environment
+## execute - no docker environment
+
 - uvicorn app:app
 
-#### Api Swagger
-- http://localhost:8000/docs
-- http://localhost:8000/redoc
+## Api Swagger
 
-#### References
-- https://fastapi.tiangolo.com/
-- https://hub.docker.com/
+- <http://localhost:8000/docs>
+- <http://localhost:8000/redoc>
+
+## References
+
+- <https://fastapi.tiangolo.com/>
+- <https://hub.docker.com/>
