@@ -7,7 +7,7 @@ class TournamentQueries:
         self.conn = self.db.connect()
     
     def getTournaments(self, id):
-        query  = 'SELECT id, name, date, idLeague FROM tournament WHERE id = ' + str(id)
+        query  = 'SELECT id, name, date, idLeague, players FROM tournament WHERE id = ' + str(id)
         result = self.db.getSelectSingleResultQuery(self.conn, query)
 
         return result

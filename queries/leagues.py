@@ -7,25 +7,25 @@ class LeagueQueries:
         self.conn = self.db.connect()
 
     def getCurrentLeagues(self):
-        query  = 'SELECT id, name, isLegacy, current FROM league where active = 1 AND current = 1 ORDER BY id DESC'
+        query  = 'SELECT id, name, isLegacy, current, year FROM league where active = 1 AND current = 1 ORDER BY id DESC'
         result = self.db.getSelectListResultQuery(self.conn, query)
 
         return result
     
     def getPastLeagues(self):
-        query  = 'SELECT id, name, isLegacy, current FROM league where active = 1 AND current = 0 ORDER BY id DESC'
+        query  = 'SELECT id, name, isLegacy, current, year FROM league where active = 1 AND current = 0 ORDER BY year DESC'
         result = self.db.getSelectListResultQuery(self.conn, query)
 
         return result
     
     def getLeagueData(self, id):
-        query  = 'SELECT id, name, isLegacy, current FROM league WHERE id = ' + str(id)
+        query  = 'SELECT id, name, isLegacy, current, year FROM league WHERE id = ' + str(id)
         result = self.db.getSelectSingleResultQuery(self.conn, query)
 
         return result
     
     def getLeagueTournaments(self, id, skip, limit):
-        query  = 'SELECT id, name, date, idLeague FROM tournament WHERE idLeague = ' + str(id) + ' LIMIT ' + str(skip) + ', ' + str(limit)
+        query  = 'SELECT id, name, date, idLeague, players FROM tournament WHERE idLeague = ' + str(id) + ' LIMIT ' + str(skip) + ', ' + str(limit)
         result = self.db.getSelectListResultQuery(self.conn, query)
 
         return result

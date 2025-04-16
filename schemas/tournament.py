@@ -6,6 +6,7 @@ class Tournament(BaseModel):
     name     : str
     date     : str
     idLeague : int
+    players  : int
 
 class TournamentData(BaseModel):
     tournament : Tournament

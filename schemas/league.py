@@ -5,3 +5,4 @@ class League(BaseModel):
     name     : str
     isLegacy : int
     current  : int
+    year     : int
