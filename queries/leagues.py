@@ -24,8 +24,8 @@ class LeagueQueries:
 
         return result
     
-    def getLeagueTournaments(self, id, skip, limit):
-        query  = 'SELECT id, name, date, idLeague, players FROM tournament WHERE idLeague = ' + str(id) + ' LIMIT ' + str(skip) + ', ' + str(limit)
+    def getLeagueTournaments(self, id):
+        query  = 'SELECT id, name, date, idLeague, players FROM tournament WHERE idLeague = ' + str(id)
         result = self.db.getSelectListResultQuery(self.conn, query)
 
         return result

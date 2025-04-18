@@ -54,9 +54,9 @@ async def getLeagueData(id: int = Path(gt = 0, title="Id League", description="L
 
 @cached(cache)
 @router.get("/{id}/tournaments", response_model=list[Tournament], status_code=HTTP_200, description="League Tournaments list")
-async def getLeagueTournamentsData(id: int = Path(gt = 0, title="Id League", description="League resource identifier"), skip: int = 0, limit: int = 10) -> Any:
+async def getLeagueTournamentsData(id: int = Path(gt = 0, title="Id League", description="League resource identifier")) -> Any:
     query  = LeagueQueries()
-    result = query.getLeagueTournaments(id, skip, limit)
+    result = query.getLeagueTournaments(id)
     
     if len(result) == 0:
         raise HTTPException(status_code=HTTP_404, detail="No items found")
