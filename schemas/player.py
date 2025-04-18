@@ -12,8 +12,12 @@ class PlayerData(BaseModel):
     name     : str
     position : int
     idDeck   : int
+class PlayerDataWithDeck(BaseModel):
+    id       : int 
+    name     : str
+    position : int
+    idDeck   : int
     deck     : list[Card]
-
 class PlayerStats(BaseModel):
     num  : int 
     name : str

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Path
 from codes.codes import HTTP_200, HTTP_404
 from typing import Any
-from schemas.player import Player, PlayerData
+from schemas.player import Player, PlayerDataWithDeck
 from schemas.deck import Deck
 from queries.players import PlayerQueries
 from queries.decks import DeckQueries
@@ -28,7 +28,7 @@ async def getPlayer(id: int = Path(gt = 0, title="Id Player", description="Playe
 
 
 @cached(cache)
-@router.get("/{id}/data", response_model=PlayerData, status_code=HTTP_200, description="Player info and deck list")
+@router.get("/{id}/data", response_model=PlayerDataWithDeck, status_code=HTTP_200, description="Player info and deck list")
 async def getPlayerDeckData(id: int = Path(gt = 0, title="Id Player", description="Player resource identifier")) -> Any:
     query  = PlayerQueries()
     result = query.getPlayerDeckData(id)

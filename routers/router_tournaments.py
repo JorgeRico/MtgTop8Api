@@ -62,11 +62,6 @@ async def getTournamentData(id: int = Path(gt = 0, title="Id Tournament", descri
     query      = TournamentQueries()
     players    = query.getTournamentPlayers(str(id))
 
-    for player in players:
-        query = DeckQueries()
-        cards = query.getDeckCards(player['idDeck'])
-        player.update({'deck' : cards})
-
     if tournament == None:
         raise HTTPException(status_code=HTTP_404, detail="Item not found")
     if len(players) == 0:
