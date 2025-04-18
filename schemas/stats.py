@@ -1,23 +1,6 @@
 from pydantic import BaseModel
 from schemas.card import TopCard
-from schemas.player import PlayerStats
 
 STATS_LIMIT = 15
-
-class CardStats(BaseModel):
-    creatures     : list[TopCard]
-    instants      : list[TopCard]
-    sorceries     : list[TopCard]
-    planeswalkers : list[TopCard]
-    artifacts     : list[TopCard]
-    enchantments  : list[TopCard]
-    lands         : list[TopCard]
-class SingleCardStats(BaseModel):
-    cards : list[TopCard]
-class TournamentStats(BaseModel):
-    top10 : list[TopCard]
-    mb    : list[TopCard]
-    sb    : list[TopCard]
-
-class LeagueStats(BaseModel):
+class Stats(BaseModel):
     stats : list[TopCard]

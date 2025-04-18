@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Path
 from schemas.league import League
 from codes.codes import HTTP_200, HTTP_404
 from typing import Any
-from schemas.stats import LeagueStats, SingleCardStats, STATS_LIMIT
+from schemas.stats import Stats, STATS_LIMIT
 from schemas.card import MAINDECK_CARD, SIDEBOARD_CARD
 from schemas.tournament import Tournament
 from queries.leagues import LeagueQueries
@@ -65,7 +65,7 @@ async def getLeagueTournamentsData(id: int = Path(gt = 0, title="Id League", des
 
 
 @cached(cache)
-@router.get("/{id}/stats/{options}", response_model=LeagueStats, status_code=HTTP_200, description="League Stats")
+@router.get("/{id}/stats/{options}", response_model=Stats, status_code=HTTP_200, description="League Stats")
 async def getTop10LeagueCards(id: int = Path(gt = 0, title="Id League", description="League resource identifier"), options: str = Path(title="League Options", description="League resource options")):
     query = LeagueQueries()
 
@@ -81,14 +81,14 @@ async def getTop10LeagueCards(id: int = Path(gt = 0, title="Id League", descript
     if len(result) == 0:
         raise HTTPException(status_code=HTTP_404, detail="No items found")
 
-    return LeagueStats(stats=result)
+    return Stats(stats=result)
 
 
 @cached(cache)
-@router.get("/{id}/cards/{cardType}/stats", response_model=SingleCardStats, status_code=HTTP_200, description="League Cards Stats")
+@router.get("/{id}/cards/{cardType}/stats", response_model=Stats, status_code=HTTP_200, description="League Cards Stats")
 async def getLeagueCardsByType(id: int = Path(gt = 0, title="Id League", description="League resource identifier"), cardType: str = Path(title="Card Type", description="Card Type to search")):
     query = LeagueQueries()
     cards = query.getTopLeagueCardSingleType(id, cardType, STATS_LIMIT)
 
-    return SingleCardStats(cards=cards)
+    return Stats(stats=cards)
     

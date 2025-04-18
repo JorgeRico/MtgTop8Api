@@ -1,12 +1,11 @@
 from fastapi import APIRouter, HTTPException, Path
 from schemas.tournament import Tournament, TournamentData
 from queries.tournaments import TournamentQueries
-from queries.decks import DeckQueries
 from codes.codes import HTTP_200, HTTP_404
 from typing import Any
 from schemas.player import Player
 from schemas.deck import Deck
-from schemas.stats import TournamentStats, CardStats, STATS_LIMIT
+from schemas.stats import Stats, Stats, STATS_LIMIT
 from schemas.card import MAINDECK_CARD, SIDEBOARD_CARD
 from cachetools import cached, TTLCache
 
@@ -71,43 +70,27 @@ async def getTournamentData(id: int = Path(gt = 0, title="Id Tournament", descri
 
 
 @cached(cache)
-@router.get("/{id}/stats", response_model=TournamentStats, status_code=HTTP_200, description="Tournament stats")
-async def getTournamentStats(id: int = Path(gt = 0, title="Id Tournament", description="Tournament resource identifier")):
+@router.get("/{id}/stats/{options}", response_model=Stats, status_code=HTTP_200, description="Tournament Stats")
+async def getTop10LeagueCards(id: int = Path(gt = 0, title="Id League", description="Tournament resource identifier"), options: str = Path(title="Tournament Options", description="Tournament resource options")):
     query = TournamentQueries()
-    top10 = query.getTournamentTopCards(id, STATS_LIMIT)
-    if len(top10) == 0:
-        raise HTTPException(status_code=HTTP_404, detail="No items found")
-    
-    query = TournamentQueries()
-    mb    = query.getTournamentMainboardCards(id, MAINDECK_CARD, STATS_LIMIT)
-    if len(mb) == 0:
-        raise HTTPException(status_code=HTTP_404, detail="No items found")
-    
-    query = TournamentQueries()
-    sb    = query.getTournamentSideoardCards(id, SIDEBOARD_CARD, STATS_LIMIT)
-    if len(sb) == 0:
+
+    if options == 'top':
+        result = query.getTournamentTopCards(id, STATS_LIMIT)
+    if options == "mainboard":
+        result = query.getTournamentMainboardCards(id, MAINDECK_CARD, STATS_LIMIT)
+    if options == "sideboard":
+        result = query.getTournamentSideoardCards(id, SIDEBOARD_CARD, STATS_LIMIT)
+
+    if len(result) == 0:
         raise HTTPException(status_code=HTTP_404, detail="No items found")
 
-    return TournamentStats(top10=top10, mb=mb, sb=sb)
+    return Stats(stats=result)
 
 
 @cached(cache)
-@router.get("/{id}/cards/stats", response_model=CardStats, status_code=HTTP_200, description="Tournament Card Stats")
-async def getTournamentCards(id: int = Path(gt = 0, title="Id Tournament", description="Tournament resource identifier")):
-    query         = TournamentQueries()
-    creatures     = query.getTopTournamentCardSingleType(id, 'creature', STATS_LIMIT)
-    query         = TournamentQueries()
-    instants      = query.getTopTournamentCardSingleType(id, 'instant', STATS_LIMIT)
-    query         = TournamentQueries()
-    sorceries     = query.getTopTournamentCardSingleType(id, 'sorcery', STATS_LIMIT)
-    query         = TournamentQueries()
-    planeswalkers = query.getTopTournamentCardSingleType(id, 'planeswalker', STATS_LIMIT)
-    query         = TournamentQueries()
-    artifacts     = query.getTopTournamentCardSingleType(id, 'artifact', STATS_LIMIT)
-    query         = TournamentQueries()
-    enchantments  = query.getTopTournamentCardSingleType(id, 'enchantment', STATS_LIMIT)
-    query         = TournamentQueries()
-    lands         = query.getTopTournamentCardSingleType(id, 'land', STATS_LIMIT)
+@router.get("/{id}/cards/{cardType}/stats", response_model=Stats, status_code=HTTP_200, description="Tournament Cards Stats")
+async def getTournamentCardsByType(id: int = Path(gt = 0, title="Id League", description="Tournament resource identifier"), cardType: str = Path(title="Card Type", description="Card Type to search")):
+    query = TournamentQueries()
+    cards = query.getTopTournamentCardSingleType(id, cardType, STATS_LIMIT)
 
-    return CardStats(creatures=creatures, instants=instants, sorceries=sorceries, planeswalkers=planeswalkers, artifacts=artifacts, enchantments=enchantments, lands=lands)
-    
+    return Stats(stats=cards)
