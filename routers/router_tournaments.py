@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Path
 from schemas.tournament import Tournament, TournamentData
 from queries.tournaments import TournamentQueries
-from codes.codes import HTTP_200, HTTP_404
+from codes.codes import HTTP_200, HTTP_404, TOP, MAINBOARD, SIDEBOARD
 from typing import Any
 from schemas.player import Player
 from schemas.deck import Deck
@@ -74,12 +74,12 @@ async def getTournamentData(id: int = Path(gt = 0, title="Id Tournament", descri
 async def getTop10LeagueCards(id: int = Path(gt = 0, title="Id League", description="Tournament resource identifier"), options: str = Path(title="Tournament Options", description="Tournament resource options")):
     query = TournamentQueries()
 
-    if options == 'top':
+    if options == TOP:
         result = query.getTournamentTopCards(id, STATS_LIMIT)
-    if options == "mainboard":
-        result = query.getTournamentMainboardCards(id, MAINDECK_CARD, STATS_LIMIT)
-    if options == "sideboard":
-        result = query.getTournamentSideoardCards(id, SIDEBOARD_CARD, STATS_LIMIT)
+    if options == MAINBOARD:
+        result = query.getTournamentCards(id, MAINDECK_CARD, STATS_LIMIT)
+    if options == SIDEBOARD:
+        result = query.getTournamentCards(id, SIDEBOARD_CARD, STATS_LIMIT)
 
     if len(result) == 0:
         raise HTTPException(status_code=HTTP_404, detail="No items found")

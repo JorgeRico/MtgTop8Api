@@ -41,24 +41,11 @@ class TournamentQueries:
 
         return result
     
-    def getTournamentMainboardCards(self, id, cardType, limit):
+    def getTournamentCards(self, id, cardType, limit):
         query = "SELECT SUM(cards.num) as num, cards.name FROM cards "
         query += "INNER JOIN player ON player.idDeck = cards.idDeck "
         query += "INNER JOIN tournament ON tournament.id = player.idTournament "
         query += "WHERE tournament.id = " + str(id) + " and cards.board = '" + cardType + "' "
-        query += "GROUP BY cards.name "
-        query += "ORDER BY num desc "
-        query += "LIMIT " + str(limit) + ";"
-
-        result = self.db.getSelectListResultQuery(self.conn, query)
-
-        return result
-    
-    def getTournamentSideoardCards(self, id, cardType, limit):
-        query = "SELECT SUM(cards.num) as num, cards.name FROM cards "
-        query += "INNER JOIN player ON player.idDeck = cards.idDeck "
-        query += "INNER JOIN tournament ON tournament.id = player.idTournament "
-        query += "WHERE tournament.id = " + str(id) + " AND cards.board = '" + cardType + "' "
         query += "GROUP BY cards.name "
         query += "ORDER BY num desc "
         query += "LIMIT " + str(limit) + ";"

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Path
 from schemas.league import League
-from codes.codes import HTTP_200, HTTP_404
+from codes.codes import HTTP_200, HTTP_404, TOP, MAINBOARD, SIDEBOARD, PLAYERS
 from typing import Any
 from schemas.stats import Stats, STATS_LIMIT
 from schemas.card import MAINDECK_CARD, SIDEBOARD_CARD
@@ -69,13 +69,13 @@ async def getLeagueTournamentsData(id: int = Path(gt = 0, title="Id League", des
 async def getTop10LeagueCards(id: int = Path(gt = 0, title="Id League", description="League resource identifier"), options: str = Path(title="League Options", description="League resource options")):
     query = LeagueQueries()
 
-    if options == 'top':
+    if options == TOP:
         result = query.getTopLeagueCards(id, STATS_LIMIT)
-    if options == "mainboard":
-        result = query.getMainboardLeagueCards(id, MAINDECK_CARD, STATS_LIMIT)
-    if options == "sideboard":
-        result = query.getSideboardLeagueCards(id, SIDEBOARD_CARD, STATS_LIMIT)
-    if options == "players":
+    if options == MAINBOARD:
+        result = query.getLeagueCards(id, MAINDECK_CARD, STATS_LIMIT)
+    if options == SIDEBOARD:
+        result = query.getLeagueCards(id, SIDEBOARD_CARD, STATS_LIMIT)
+    if options == PLAYERS:
         result = query.getLeaguePlayers(id, STATS_LIMIT)
 
     if len(result) == 0:

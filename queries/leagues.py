@@ -57,24 +57,11 @@ class LeagueQueries:
 
         return result
     
-    def getMainboardLeagueCards(self, id, boardType, limit):
+    def getLeagueCards(self, id, boardType, limit):
         query = "SELECT SUM(cards.num) as num, cards.name FROM cards "
         query += "INNER JOIN player ON player.idDeck = cards.idDeck "
         query += "INNER JOIN tournament ON tournament.id = player.idTournament "
         query += "WHERE tournament.idLeague = " + str(id) + " and cards.board = '" + str(boardType) + "' "
-        query += "GROUP BY cards.name "
-        query += "ORDER BY num desc "
-        query += "LIMIT " + str(limit) + ";"
-
-        result = self.db.getSelectListResultQuery(self.conn, query)
-
-        return result
-    
-    def getSideboardLeagueCards(self, id, boardType, limit):
-        query = "SELECT SUM(cards.num) as num, cards.name FROM cards "
-        query += "INNER JOIN player ON player.idDeck = cards.idDeck "
-        query += "INNER JOIN tournament ON tournament.id = player.idTournament "
-        query += "WHERE tournament.idLeague = " + str(id) + " AND cards.board = '" + boardType + "' "
         query += "GROUP BY cards.name "
         query += "ORDER BY num desc "
         query += "LIMIT " + str(limit) + ";"
