@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Path
 from schemas.league import League
 from codes.codes import HTTP_200, HTTP_404
 from typing import Any
-from schemas.stats import LeagueStats, CardStats, STATS_LIMIT
+from schemas.stats import LeagueStats, SingleCardStats, STATS_LIMIT
 from schemas.card import MAINDECK_CARD, SIDEBOARD_CARD
 from schemas.tournament import Tournament
 from queries.leagues import LeagueQueries
@@ -65,52 +65,30 @@ async def getLeagueTournamentsData(id: int = Path(gt = 0, title="Id League", des
 
 
 @cached(cache)
-@router.get("/{id}/stats", response_model=LeagueStats, status_code=HTTP_200, description="League Stats")
-async def getTop10LeagueCards(id: int = Path(gt = 0, title="Id League", description="League resource identifier")):
+@router.get("/{id}/stats/{options}", response_model=LeagueStats, status_code=HTTP_200, description="League Stats")
+async def getTop10LeagueCards(id: int = Path(gt = 0, title="Id League", description="League resource identifier"), options: str = Path(title="League Options", description="League resource options")):
     query = LeagueQueries()
-    top10 = query.getTopLeagueCards(id, STATS_LIMIT)
 
-    if len(top10) == 0:
-        raise HTTPException(status_code=HTTP_404, detail="No items found")
-    
-    query = LeagueQueries()
-    mb    = query.getMainboardLeagueCards(id, MAINDECK_CARD, STATS_LIMIT)
+    if options == 'top':
+        result = query.getTopLeagueCards(id, STATS_LIMIT)
+    if options == "mainboard":
+        result = query.getMainboardLeagueCards(id, MAINDECK_CARD, STATS_LIMIT)
+    if options == "sideboard":
+        result = query.getSideboardLeagueCards(id, SIDEBOARD_CARD, STATS_LIMIT)
+    if options == "players":
+        result = query.getLeaguePlayers(id, STATS_LIMIT)
 
-    if len(mb) == 0:
-        raise HTTPException(status_code=HTTP_404, detail="No items found")
-    
-    query = LeagueQueries()
-    sb    = query.getSideboardLeagueCards(id, SIDEBOARD_CARD, STATS_LIMIT)
-
-    if len(sb) == 0:
+    if len(result) == 0:
         raise HTTPException(status_code=HTTP_404, detail="No items found")
 
-    query   = LeagueQueries()
-    players = query.getLeaguePlayers(id, STATS_LIMIT)
-
-    if len(players) == 0:
-        raise HTTPException(status_code=HTTP_404, detail="No items found")
-
-    return LeagueStats(top10=top10, mb=mb, sb=sb, players=players)
+    return LeagueStats(stats=result)
 
 
 @cached(cache)
-@router.get("/{id}/cards/stats", response_model=CardStats, status_code=HTTP_200, description="League Cards Stats")
-async def getLeagueCards(id: int = Path(gt = 0, title="Id League", description="League resource identifier")):
-    query         = LeagueQueries()
-    creatures     = query.getTopLeagueCardSingleType(id, 'creature', STATS_LIMIT)
-    query         = LeagueQueries()
-    instants      = query.getTopLeagueCardSingleType(id, 'instant', STATS_LIMIT)
-    query         = LeagueQueries()
-    sorceries     = query.getTopLeagueCardSingleType(id, 'sorcery', STATS_LIMIT)
-    query         = LeagueQueries()
-    planeswalkers = query.getTopLeagueCardSingleType(id, 'planeswalker', STATS_LIMIT)
-    query         = LeagueQueries()
-    artifacts     = query.getTopLeagueCardSingleType(id, 'artifact', STATS_LIMIT)
-    query         = LeagueQueries()
-    enchantments  = query.getTopLeagueCardSingleType(id, 'enchantment', STATS_LIMIT)
-    query         = LeagueQueries()
-    lands         = query.getTopLeagueCardSingleType(id, 'land', STATS_LIMIT)
+@router.get("/{id}/cards/{cardType}/stats", response_model=SingleCardStats, status_code=HTTP_200, description="League Cards Stats")
+async def getLeagueCardsByType(id: int = Path(gt = 0, title="Id League", description="League resource identifier"), cardType: str = Path(title="Card Type", description="Card Type to search")):
+    query = LeagueQueries()
+    cards = query.getTopLeagueCardSingleType(id, cardType, STATS_LIMIT)
 
-    return CardStats(creatures=creatures, instants=instants, sorceries=sorceries, planeswalkers=planeswalkers, artifacts=artifacts, enchantments=enchantments, lands=lands)
+    return SingleCardStats(cards=cards)
     

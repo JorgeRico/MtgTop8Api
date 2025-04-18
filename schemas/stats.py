@@ -12,14 +12,12 @@ class CardStats(BaseModel):
     artifacts     : list[TopCard]
     enchantments  : list[TopCard]
     lands         : list[TopCard]
-
+class SingleCardStats(BaseModel):
+    cards : list[TopCard]
 class TournamentStats(BaseModel):
     top10 : list[TopCard]
     mb    : list[TopCard]
     sb    : list[TopCard]
 
 class LeagueStats(BaseModel):
-    top10     : list[TopCard]
-    mb        : list[TopCard]
-    sb        : list[TopCard]
-    players   : list[PlayerStats]
+    stats : list[TopCard]
