@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from schemas.card import Card
 
 class Player(BaseModel):
     id       : int 
@@ -7,17 +6,13 @@ class Player(BaseModel):
     position : int
     idDeck   : int
 
-class PlayerData(BaseModel):
+class PlayerWithDeck(BaseModel):
     id       : int 
     name     : str
     position : int
     idDeck   : int
-class PlayerDataWithDeck(BaseModel):
-    id       : int 
-    name     : str
-    position : int
-    idDeck   : int
-    deck     : list[Card]
+    deckName : str
+
 class PlayerStats(BaseModel):
     num  : int 
     name : str

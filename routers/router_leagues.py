@@ -66,15 +66,15 @@ async def getLeagueTournamentsData(id: int = Path(gt = 0, title="Id League", des
 
 @cached(cache)
 @router.get("/{id}/stats/{options}", response_model=Stats, status_code=HTTP_200, description="League Stats")
-async def getTop10LeagueCards(id: int = Path(gt = 0, title="Id League", description="League resource identifier"), options: str = Path(title="League Options", description="League resource options")):
+async def getLeagueStatss(id: int = Path(gt = 0, title="Id League", description="League resource identifier"), options: str = Path(title="League Options", description="League resource options")):
     query = LeagueQueries()
 
     if options == TOP:
         result = query.getTopLeagueCards(id, STATS_LIMIT)
     if options == MAINBOARD:
-        result = query.getLeagueCards(id, MAINDECK_CARD, STATS_LIMIT)
+        result = query.getLeagueCardsByBoard(id, MAINDECK_CARD, STATS_LIMIT)
     if options == SIDEBOARD:
-        result = query.getLeagueCards(id, SIDEBOARD_CARD, STATS_LIMIT)
+        result = query.getLeagueCardsByBoard(id, SIDEBOARD_CARD, STATS_LIMIT)
     if options == PLAYERS:
         result = query.getLeaguePlayers(id, STATS_LIMIT)
 
@@ -86,7 +86,7 @@ async def getTop10LeagueCards(id: int = Path(gt = 0, title="Id League", descript
 
 @cached(cache)
 @router.get("/{id}/cards/{cardType}/stats", response_model=Stats, status_code=HTTP_200, description="League Cards Stats")
-async def getLeagueCardsByType(id: int = Path(gt = 0, title="Id League", description="League resource identifier"), cardType: str = Path(title="Card Type", description="Card Type to search")):
+async def getLeagueCardStatsByType(id: int = Path(gt = 0, title="Id League", description="League resource identifier"), cardType: str = Path(title="Card Type", description="Card Type to search")):
     query = LeagueQueries()
     cards = query.getTopLeagueCardSingleType(id, cardType, STATS_LIMIT)
 
