@@ -8,7 +8,9 @@ class TournamentQueries:
     
     # get tournament info
     def getTournaments(self, id):
-        query  = 'SELECT id, name, date, idLeague, players FROM tournament WHERE id = ' + str(id)
+        query  = 'SELECT tournament.id as id, tournament.name as name, tournament.date as date, tournament.idLeague as idLeague, tournament.players as players, league.isLegacy as format FROM tournament '
+        query  += 'INNER JOIN league on league.id = tournament.idLeague '
+        query  += 'WHERE tournament.id = ' + str(id)
         result = self.db.getSelectSingleResultQuery(self.conn, query)
 
         return result

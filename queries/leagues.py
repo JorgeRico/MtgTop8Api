@@ -29,7 +29,10 @@ class LeagueQueries:
     
     # get league tournaments list
     def getLeagueTournaments(self, id):
-        query  = 'SELECT id, name, date, idLeague, players FROM tournament WHERE idLeague = ' + str(id)
+        query  = 'SELECT tournament.id as id, tournament.name as name, tournament.date as date, tournament.idLeague as idLeague, tournament.players as players, league.isLegacy as format FROM tournament '
+        query  += 'INNER JOIN league on league.id = tournament.idLeague '
+        query  += 'WHERE tournament.idLeague = ' + str(id)
+
         result = self.db.getSelectListResultQuery(self.conn, query)
 
         return result

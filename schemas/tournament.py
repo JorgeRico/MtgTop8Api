@@ -5,3 +5,4 @@ class Tournament(BaseModel):
     date     : str
     idLeague : int
     players  : int
+    format   : int
