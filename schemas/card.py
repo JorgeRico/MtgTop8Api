@@ -9,7 +9,9 @@ class Card(BaseModel):
     num      : int
     cardType : str
     board    : str
+    imgUrl   : str
 
 class TopCard(BaseModel):
-    num  : int 
-    name : str
+    num    : int 
+    name   : str
+    imgUrl : str | None = None
