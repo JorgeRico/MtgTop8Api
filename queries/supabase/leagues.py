@@ -31,7 +31,7 @@ class LeagueQueries:
     # get league tournaments list
     async def getLeagueTournaments(self, id):
         conn   = await self.db.getSupabase()
-        result = conn.table('tournaments').select('id, name, date, idLeague, players, leagues(isLegacy)').eq('idLeague', str(id)).execute()
+        result = conn.table('tournaments').select('id, name, date, idLeague, players, leagues(isLegacy)').eq('idLeague', str(id)).order('datetime', desc=True).execute()
         
         # data conversion - compatibillity with mysql old results
         values = []
