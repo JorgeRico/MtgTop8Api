@@ -40,24 +40,3 @@ app.add_middleware(
 @app.get("/health", status_code=HTTP_200, description="Health endpoint")
 async def index():
     return { "message": "It works !!!!" }
-
-
-
-# from fastapi import FastAPI
-# from supabase import create_client, Client
-# app = FastAPI()
-
-# url = 'https://akcrfttlllzxeqbfrblj.supabase.co'
-# key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrY3JmdHRsbGx6eGVxYmZyYmxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgxMTUwNDgsImV4cCI6MjA3MzY5MTA0OH0.5ePOOVBOaiJFCf9JppOR-ZadusPvBgHULJTiUIBn6WE'
-
-# supabase: Client = create_client(url, key)
-
-# @app.get("/leagues")
-# def themes():
-#     themes = supabase.table('leagues').select('*').execute()
-#     return themes
-
-# @app.get("/tournaments/")
-# def monsters(theme : str = "demo-theme-1"):
-#     monsters = supabase.table('monsters').select('*').eq('monsterTheme',theme).execute()
-#     return monsters
