@@ -9,3 +9,7 @@ class League(BaseModel):
 
 class IdLeague(BaseModel):
     id : int
+
+class HomeLeagues(BaseModel):
+    current : list[League]
+    past    : list[League]
