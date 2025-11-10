@@ -6,3 +6,6 @@ class League(BaseModel):
     isLegacy : int
     current  : int
     year     : int
+
+class IdLeague(BaseModel):
+    id : int

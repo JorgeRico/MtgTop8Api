@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Path
-from schemas.tournament import Tournament
+from schemas.tournament import Tournament, IdTournament
 from schemas.player import PlayerWithDeck
 from schemas.stats import Stats, Stats, STATS_LIMIT
 from schemas.card import MAINDECK_CARD, SIDEBOARD_CARD
@@ -15,6 +15,18 @@ router = APIRouter(
 )
 
 cache = TTLCache(maxsize=100, ttl=300)  # Cache size of 100 items, expires after 5 minutes
+
+
+@cached(cache)
+@router.get("/all", response_model=list[IdTournament], status_code=HTTP_200, description="All Tournaments ids")
+async def getAllIdTournaments() -> Any:
+    query  = TournamentQueries()
+    result = await query.getAllTournaments()
+
+    if result is None or id is None:
+        raise HTTPException(status_code=HTTP_404, detail="Tournaments not found")
+
+    return result
 
 
 @cached(cache)

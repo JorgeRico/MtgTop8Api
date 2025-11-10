@@ -5,6 +5,13 @@ class TournamentQueries:
 
     def __init__(self):
         self.db = Db()
+
+    # get all tournaments
+    async def getAllTournaments(self):
+        conn   = await self.db.getSupabase()
+        result = conn.table('tournaments').select('id').order("id", desc=True).execute()
+        
+        return result.data
     
     # get tournament info
     async def getTournaments(self, idTournament):

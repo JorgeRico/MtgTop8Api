@@ -7,6 +7,13 @@ class LeagueQueries:
     def __init__(self):
         self.db = Db()
 
+    # get all leagues
+    async def getAllIdLeagues(self):
+        conn   = await self.db.getSupabase()
+        result = conn.table('leagues').select('id').eq('active', 1).order("id", desc=True).execute()
+
+        return result.data
+
     # get active leagues - current year
     async def getCurrentLeagues(self):
         conn   = await self.db.getSupabase()

@@ -6,3 +6,6 @@ class Tournament(BaseModel):
     idLeague : int
     players  : int
     format   : int
+
+class IdTournament(BaseModel):
+    id : int
