@@ -57,9 +57,16 @@ class LeagueQueries:
     
     # get league top cards stats
     async def getTopLeagueCards(self, idLeague, limit):
-        conn    = await self.db.getSupabase()
-        idDecks = self.getIdDecks(conn, idLeague)
+        conn = await self.db.getSupabase()
 
+        idTournaments = self.getIdTournaments(conn, idLeague)
+        if idTournaments == []:
+            return []
+        
+        idDecks = self.getIdDecks(conn, idTournaments)
+        if idDecks == []:
+            return []
+        
         # python needs other query to solve 2 joins
         result = conn.table('cards').select('num, name, imgUrl').in_('idDeck', idDecks).order('name', desc=False).execute()
 
@@ -67,9 +74,16 @@ class LeagueQueries:
     
     # league card stats by card type
     async def getTopLeagueCardSingleType(self, idLeague, cardType, limit):
-        conn    = await self.db.getSupabase()
-        idDecks = self.getIdDecks(conn, idLeague)
-
+        conn = await self.db.getSupabase()
+        
+        idTournaments = self.getIdTournaments(conn, idLeague)
+        if idTournaments == []:
+            return []
+        
+        idDecks = self.getIdDecks(conn, idTournaments)
+        if idDecks == []:
+            return []
+        
         # python needs other query to solve 2 joins
         result = conn.table('cards').select('num, name, imgUrl').eq('cardType', cardType).in_('idDeck', idDecks).order('name', desc=False).execute()
 
@@ -77,8 +91,15 @@ class LeagueQueries:
     
     # league card stats by board type
     async def getLeagueCardsByBoard(self, idLeague, boardType, limit):
-        conn    = await self.db.getSupabase()
-        idDecks = self.getIdDecks(conn, idLeague)
+        conn = await self.db.getSupabase()
+
+        idTournaments = self.getIdTournaments(conn, idLeague)
+        if idTournaments == []:
+            return []
+        
+        idDecks = self.getIdDecks(conn, idTournaments)
+        if idDecks == []:
+            return []
 
         # python needs other query to solve 2 joins
         result = conn.table('cards').select('num, name, imgUrl').eq('board', boardType).in_('idDeck', idDecks).order('name', desc=False).execute()
@@ -114,8 +135,8 @@ class LeagueQueries:
         return result
     
     # get tournament idDecks
-    def getIdDecks(self, conn, idLeague):
-        result = conn.table('players').select('idDeck, tournaments()').eq('tournaments.idLeague', str(idLeague)).execute()
+    def getIdDecks(self, conn, idTournaments):
+        result = conn.table('players').select('idDeck').in_('idTournament', idTournaments).execute()
 
         idDecks = []
         for i in result.data:
@@ -157,7 +178,7 @@ class LeagueQueries:
 
             finalResult.append(item)
 
-        values = sorted(finalResult, key=lambda x: (x['num'], x['name']))
+        values  = sorted(finalResult, key=lambda x: (x['num'], x['name']))
         reverse = values[::-1]
         result  = reverse[0:limit]
 

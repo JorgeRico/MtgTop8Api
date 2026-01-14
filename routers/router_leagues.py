@@ -118,5 +118,8 @@ async def getLeagueCardStatsByType(id: int = Path(gt = 0, title="Id League", des
     query = LeagueQueries()
     cards = await query.getTopLeagueCardSingleType(id, cardType, STATS_LIMIT)
 
+    if len(cards) == 0:
+        raise HTTPException(status_code=HTTP_404, detail="No items found")
+
     return Stats(stats=cards)
     
