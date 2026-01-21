@@ -14,13 +14,15 @@ class LeagueQueries:
         return result
     
     # get past leagues - other years
-    async def getPastLeagues(self):
-        query  = 'SELECT id, name, isLegacy, current, year FROM leagues where active = 1 AND current = 0 ORDER BY year DESC'
+    # TODO: NOT tested
+    async def getPastLeagues(self, offset, limit):
+        query  = 'SELECT id, name, isLegacy, current, year FROM leagues where active = 1 AND current = 0 ORDER BY year DESC LIMIT ' + offset + ',' + limit
         result = await self.db.getSelectListResultQuery(self.conn, query)
 
         return result
     
     # get count past leagues - other years
+    # TODO: NOT tested
     async def getCountPastLeagues(self):
         query  = 'SELECT count(id) FROM leagues where active = 1 AND current = 0'
 
