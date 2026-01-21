@@ -13,3 +13,7 @@ class IdLeague(BaseModel):
 class HomeLeagues(BaseModel):
     current : list[League]
     past    : list[League]
+
+class HomePastLeagues(BaseModel):
+    leagues : list[League]
+    total   : int

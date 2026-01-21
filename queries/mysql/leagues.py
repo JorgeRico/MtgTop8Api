@@ -20,6 +20,14 @@ class LeagueQueries:
 
         return result
     
+    # get count past leagues - other years
+    async def getCountPastLeagues(self):
+        query  = 'SELECT count(id) FROM leagues where active = 1 AND current = 0'
+
+        result = await self.db.getSelectListResultQuery(self.conn, query)
+
+        return result
+    
     # get league info
     async def getLeagueData(self, id):
         query  = 'SELECT id, name, isLegacy, current, year FROM leagues WHERE id = ' + str(id)

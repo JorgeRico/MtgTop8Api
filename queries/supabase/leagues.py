@@ -22,11 +22,18 @@ class LeagueQueries:
         return result.data
     
     # get past leagues - other years
-    async def getPastLeagues(self):
+    async def getPastLeagues(self, init_range, end_range):
         conn   = await self.db.getSupabase()
-        result = conn.table('leagues').select('id, name, isLegacy, current, year').eq('active', 1).eq('current', 0).order("year", desc=True).execute()
+        result = conn.table('leagues').select('id, name, isLegacy, current, year').eq('active', 1).eq('current', 0).range(init_range, end_range).order("year", desc=True).execute()
 
         return result.data
+    
+    # get count past leagues - other years
+    async def getCountPastLeagues(self):
+        conn   = await self.db.getSupabase()
+        result = conn.table('leagues').select('id', count="exact").eq('active', 1).eq('current', 0).execute()
+
+        return result.count
     
     # get league info
     async def getLeagueData(self, id):

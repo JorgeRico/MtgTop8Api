@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Path
 from codes.codes import HTTP_200, HTTP_404, TOP, MAINBOARD, SIDEBOARD, PLAYERS
 from typing import Any
-from schemas.league import League, IdLeague, HomeLeagues
+from schemas.league import League, IdLeague, HomeLeagues, HomePastLeagues
 from schemas.stats import Stats, STATS_LIMIT
 from schemas.card import MAINDECK_CARD, SIDEBOARD_CARD
 from schemas.tournament import Tournament
@@ -57,15 +57,19 @@ async def getLeagueData() -> Any:
 
 
 @cached(cache)
-@router.get("/past", response_model=list[League], status_code=HTTP_200, description="Leagues info")
-async def getLeagueData() -> Any:
-    query  = LeagueQueries()
-    result = await query.getPastLeagues()
+@router.get("/past", response_model=HomePastLeagues, status_code=HTTP_200, description="Leagues info")
+async def getLeagueData(page: int = 1, limit: int = 5) -> Any:
+    init_range = (page-1) * limit
+    end_range  = init_range + (limit-1)
 
-    if result is None or id is None:
+    query  = LeagueQueries()
+    total  = await query.getCountPastLeagues()
+    result = await query.getPastLeagues(init_range, end_range)
+
+    if result is None or total is None:
         raise HTTPException(status_code=HTTP_404, detail="League not found")
 
-    return result
+    return { 'leagues' : result, 'total' : total }
 
 
 @cached(cache)
