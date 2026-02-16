@@ -1,11 +1,13 @@
 from pydantic import BaseModel
 
 class League(BaseModel):
-    id       : int
-    name     : str
-    isLegacy : int
-    current  : int
-    year     : int
+    id           : int
+    name         : str
+    isLegacy     : int
+    current      : int
+    year         : int
+    location     : str | None
+    locationName : str | None
 
 class IdLeague(BaseModel):
     id : int
