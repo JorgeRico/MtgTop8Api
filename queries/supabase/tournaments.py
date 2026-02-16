@@ -16,16 +16,18 @@ class TournamentQueries:
     # get tournament info
     async def getTournaments(self, idTournament):
         conn   = await self.db.getSupabase()
-        result = conn.table('tournaments').select('id, name, date, idLeague, players, leagues(isLegacy)').eq('id', str(idTournament)).order("id", desc=True).execute()
+        result = conn.table('tournaments').select('id, name, date, idLeague, players, leagues(isLegacy, year, name)').eq('id', str(idTournament)).order("id", desc=True).execute()
         
         # data conversion - compatibillity with mysql old results
         item = {
-            'id'       : result.data[0]['id'], 
-            'name'     : result.data[0]['name'], 
-            'date'     : result.data[0]['date'], 
-            'idLeague' : result.data[0]['idLeague'], 
-            'players'  : result.data[0]['players'], 
-            'format'   : result.data[0]['leagues']['isLegacy']
+            'id'         : result.data[0]['id'], 
+            'name'       : result.data[0]['name'], 
+            'date'       : result.data[0]['date'], 
+            'idLeague'   : result.data[0]['idLeague'], 
+            'players'    : result.data[0]['players'], 
+            'format'     : result.data[0]['leagues']['isLegacy'],
+            'year'       : result.data[0]['leagues']['year'],
+            'leagueName' : result.data[0]['leagues']['name']
         }
         
         return item
