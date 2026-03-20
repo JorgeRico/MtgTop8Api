@@ -1,13 +1,14 @@
 from pydantic import BaseModel
 
 class League(BaseModel):
-    id           : int
-    name         : str
-    isLegacy     : int
-    current      : int
-    year         : int
-    location     : str | None
-    locationName : str | None
+    id             : int
+    name           : str
+    isLegacy       : int
+    current        : int
+    year           : int
+    location       : str | None
+    locationName   : str | None
+    classification : str | None
 
 class IdLeague(BaseModel):
     id : int
@@ -19,3 +20,6 @@ class HomeLeagues(BaseModel):
 class HomePastLeagues(BaseModel):
     leagues : list[League]
     total   : int
+
+class LeagueAverage(BaseModel):
+    average : int

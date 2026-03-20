@@ -1,6 +1,7 @@
 # from db.mysql.db import Db
 from db.supabase.db import Db
 from collections import Counter
+import math
 
 class LeagueQueries:
 
@@ -17,14 +18,14 @@ class LeagueQueries:
     # get active leagues - current year
     async def getCurrentLeagues(self):
         conn   = await self.db.getSupabase()
-        result = conn.table('leagues').select('id, name, isLegacy, current, year, location, locationName').eq('active', 1).eq('current', 1).order("id", desc=True).execute()
+        result = conn.table('leagues').select('id, name, isLegacy, current, year, location, locationName, classification').eq('active', 1).eq('current', 1).order("id", desc=True).execute()
 
         return result.data
     
     # get past leagues - other years
     async def getPastLeagues(self, init_range, end_range):
         conn   = await self.db.getSupabase()
-        result = conn.table('leagues').select('id, name, isLegacy, current, year, location, locationName').eq('active', 1).eq('current', 0).range(init_range, end_range).order("year", desc=True).execute()
+        result = conn.table('leagues').select('id, name, isLegacy, current, year, location, locationName, classification').eq('active', 1).eq('current', 0).range(init_range, end_range).order("year", desc=True).execute()
 
         return result.data
     
@@ -38,15 +39,26 @@ class LeagueQueries:
     # get league info
     async def getLeagueData(self, id):
         conn   = await self.db.getSupabase()
-        result = conn.table('leagues').select('id, name, isLegacy, current, year, location, locationName').eq('id', str(id)).execute()
+        result = conn.table('leagues').select('id, name, isLegacy, current, year, location, locationName, classification').eq('id', str(id)).execute()
 
         return result.data[0]
-    
+
+    # get league tournament average num players
+    async def getLeagueAverageData(self, id):
+        conn   = await self.db.getSupabase()
+        result = conn.table('tournaments').select('id, players').eq('idLeague', str(id)).execute()
+        print(result)
+        total = 0
+        for i in result.data:
+            total += i['players']
+
+        return {'average': math.ceil(total/len(result.data))}
+
     # get league tournaments list
     async def getLeagueTournaments(self, id):
         conn   = await self.db.getSupabase()
         result = conn.table('tournaments').select('id, name, date, idLeague, players, leagues(isLegacy, year, name)').eq('idLeague', str(id)).order('datetime', desc=True).execute()
-        
+
         # data conversion - compatibillity with mysql old results
         values = []
         for i in result.data:
