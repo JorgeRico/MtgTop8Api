@@ -47,7 +47,7 @@ class LeagueQueries:
     async def getLeagueAverageData(self, id):
         conn   = await self.db.getSupabase()
         result = conn.table('tournaments').select('id, players').eq('idLeague', str(id)).execute()
-        print(result)
+
         total = 0
         for i in result.data:
             total += i['players']
