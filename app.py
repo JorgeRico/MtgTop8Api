@@ -26,15 +26,17 @@ app.include_router(router_decks.router)
 app.include_router(router_leagues.router)
 app.include_router(router_players.router)
 
-origins = ["*"]
+# origins = ["*"]
+origins = [
+    "https://mtg-stats.vercel.app"
+]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
-    expose_headers=["*"]
+    allow_headers=["*"]
 )
 
 @app.get("/health", status_code=HTTP_200, description="Health endpoint")
