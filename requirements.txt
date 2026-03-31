@@ -4,3 +4,4 @@ mysql-connector-python
 cachetools
 supabase
 python-dotenv
+magnum

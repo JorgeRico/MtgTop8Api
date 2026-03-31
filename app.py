@@ -4,6 +4,7 @@ from codes.codes import HTTP_200
 from starlette.middleware.cors import CORSMiddleware
 from routers import router_decks, router_leagues, router_players, router_tournaments
 import os
+from mangum import Mangum
 
 if os.getenv('ENV') == 'development': 
     app = FastAPI(
@@ -42,3 +43,5 @@ app.add_middleware(
 @app.get("/health", status_code=HTTP_200, description="Health endpoint")
 async def index():
     return { "message": "It works !!!!" }
+
+handler = Mangum(app, lifespan="off")
