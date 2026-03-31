@@ -11,7 +11,10 @@
             "headers": [
                 {
                     "key": "Access-Control-Allow-Origin",
-                    "value": "https://mtg-stats.vercel.app"
+                    "value": [
+                        "https://mtg-stats-git-main-jorge-ricos-projects.vercel.app/",
+                        "https://mtg-stats.vercel.app"
+                    ]
                 },
                 {
                     "key": "Access-Control-Allow-Methods",
