@@ -10,7 +10,7 @@ from typing import Any
 from cachetools import cached, TTLCache
 
 router = APIRouter(
-    prefix = "/tournaments",
+    prefix = "/api/tournaments",
     tags   = ["Tournaments"]
 )
 
