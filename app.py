@@ -4,7 +4,6 @@ from codes.codes import HTTP_200
 from starlette.middleware.cors import CORSMiddleware
 from routers import router_decks, router_leagues, router_players, router_tournaments
 import os
-from mangum import Mangum
 
 if os.getenv('ENV') == 'development': 
     app = FastAPI(
@@ -27,22 +26,17 @@ app.include_router(router_decks.router)
 app.include_router(router_leagues.router)
 app.include_router(router_players.router)
 
-origins = [
-    "http://localhost:3000",
-    "https://mtg-stats.vercel.app",
-    "https://mtg-stats-git-main-jorge-ricos-projects.vercel.app"
-]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET, OPTIONS"],
-    allow_headers=["*"]
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"]
 )
 
 @app.get("/health", status_code=HTTP_200, description="Health endpoint")
 async def index():
     return { "message": "It works !!!!" }
-
-handler = Mangum(app, lifespan="off")
