@@ -27,16 +27,17 @@ app.include_router(router_decks.router)
 app.include_router(router_leagues.router)
 app.include_router(router_players.router)
 
-# origins = ["*"]
 origins = [
-    "https://mtg-stats.vercel.app"
+    "http://localhost:3000",
+    "https://mtg-stats.vercel.app",
+    "https://mtg-stats.vercel.app/"
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET, OPTIONS"],
     allow_headers=["*"]
 )
 
