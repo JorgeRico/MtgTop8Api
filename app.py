@@ -30,7 +30,7 @@ app.include_router(router_players.router)
 origins = [
     "http://localhost:3000",
     "https://mtg-stats.vercel.app",
-    "https://mtg-stats.vercel.app/"
+    "https://mtg-stats-git-main-jorge-ricos-projects.vercel.app"
 ]
 
 app.add_middleware(
