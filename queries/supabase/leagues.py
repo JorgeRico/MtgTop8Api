@@ -2,6 +2,7 @@
 from db.supabase.db import Db
 from collections import Counter
 import math
+from datetime import datetime
 
 class LeagueQueries:
 
@@ -57,7 +58,7 @@ class LeagueQueries:
     # get league tournaments list
     async def getLeagueTournaments(self, id):
         conn   = await self.db.getSupabase()
-        result = conn.table('tournaments').select('id, name, date, idLeague, players, leagues(isLegacy, year, name)').eq('idLeague', str(id)).order('datetime', desc=True).execute()
+        result = conn.table('tournaments').select('id, name, date, idLeague, players, leagues(isLegacy, year, name)').eq('idLeague', str(id)).execute()
 
         # data conversion - compatibillity with mysql old results
         values = []
@@ -73,6 +74,9 @@ class LeagueQueries:
                 'leagueName' : result.data[0]['leagues']['name']
             }
             values.append(item)
+
+        #sort by date descending
+        values.sort(key=lambda x: datetime.strptime(x['date'], '%d/%m/%y'), reverse=True)
 
         return values
     
