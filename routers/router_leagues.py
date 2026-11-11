@@ -10,7 +10,7 @@ from queries.supabase.leagues import LeagueQueries
 from cachetools import cached, TTLCache
 
 router = APIRouter(
-    prefix = "/api/leagues",
+    prefix = "/api/v1/leagues",
     tags   = ["Leagues"]
 )
 
