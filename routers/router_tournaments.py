@@ -7,14 +7,12 @@ from schemas.card import MAINDECK_CARD, SIDEBOARD_CARD
 from queries.supabase.tournaments import TournamentQueries
 from codes.codes import HTTP_200, HTTP_404, TOP, MAINBOARD, SIDEBOARD
 from typing import Any
-from cachetools import cached, TTLCache
+from cache import cached, cache
 
 router = APIRouter(
-    prefix = "/api/tournaments",
+    prefix = "/api/v1/tournaments",
     tags   = ["Tournaments"]
 )
-
-cache = TTLCache(maxsize=100, ttl=300)  # Cache size of 100 items, expires after 5 minutes
 
 
 @cached(cache)
@@ -23,7 +21,7 @@ async def getAllIdTournaments() -> Any:
     query  = TournamentQueries()
     result = await query.getAllTournaments()
 
-    if result is None or id is None:
+    if result is None or len(result) == 0:
         raise HTTPException(status_code=HTTP_404, detail="Tournaments not found")
 
     return result

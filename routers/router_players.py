@@ -4,14 +4,12 @@ from typing import Any
 from schemas.player import Player
 # from queries.mysql.players import PlayerQueries
 from queries.supabase.players import PlayerQueries
-from cachetools import cached, TTLCache
+from cache import cached, cache
 
 router = APIRouter(
-    prefix = "/api/players",
+    prefix = "/api/v1/players",
     tags   = ["Players"]
 )
-
-cache = TTLCache(maxsize=100, ttl=300)  # Cache size of 100 items, expires after 5 minutes
 
 
 @cached(cache)
