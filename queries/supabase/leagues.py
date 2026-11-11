@@ -49,6 +49,9 @@ class LeagueQueries:
         conn   = await self.db.getSupabase()
         result = conn.table('tournaments').select('id, players').eq('idLeague', str(id)).execute()
 
+        if result is None or len(result.data) == 0:
+            return {'average': 0}
+
         total = 0
         for i in result.data:
             total += i['players']
@@ -70,8 +73,8 @@ class LeagueQueries:
                 'idLeague'   : i['idLeague'], 
                 'players'    : i['players'], 
                 'format'     : i['leagues']['isLegacy'],
-                'year'       : result.data[0]['leagues']['year'],
-                'leagueName' : result.data[0]['leagues']['name']
+                'year'       : i['leagues']['year'],
+                'leagueName' : i['leagues']['name']
             }
             values.append(item)
 
