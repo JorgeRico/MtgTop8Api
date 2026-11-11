@@ -26,14 +26,15 @@ app.include_router(router_decks.router)
 app.include_router(router_leagues.router)
 app.include_router(router_players.router)
 
-origins = ["*"]
+allowed_origins = os.getenv('ALLOWED_ORIGINS', 'https://mtg-stats.vercel.app,http://localhost:3000').split(',')
+origins = [o.strip() for o in allowed_origins if o.strip()]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "Accept"],
     expose_headers=["*"]
 )
 
