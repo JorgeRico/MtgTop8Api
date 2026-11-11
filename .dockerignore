@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*.env
+.git/
+.gitignore
+.github/
+Readme.md
+Dockerfile
+docker-compose.yml
+vercel.ini
+vercel.json
+.node_modules/
+.venv/
+venv/
+.env
