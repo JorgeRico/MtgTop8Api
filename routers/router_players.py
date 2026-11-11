@@ -7,7 +7,7 @@ from queries.supabase.players import PlayerQueries
 from cachetools import cached, TTLCache
 
 router = APIRouter(
-    prefix = "/api/players",
+    prefix = "/api/v1/players",
     tags   = ["Players"]
 )
 

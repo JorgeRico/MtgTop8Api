@@ -10,7 +10,7 @@ from typing import Any
 from cachetools import cached, TTLCache
 
 router = APIRouter(
-    prefix = "/api/tournaments",
+    prefix = "/api/v1/tournaments",
     tags   = ["Tournaments"]
 )
 
@@ -23,7 +23,7 @@ async def getAllIdTournaments() -> Any:
     query  = TournamentQueries()
     result = await query.getAllTournaments()
 
-    if result is None or id is None:
+    if result is None or len(result) == 0:
         raise HTTPException(status_code=HTTP_404, detail="Tournaments not found")
 
     return result

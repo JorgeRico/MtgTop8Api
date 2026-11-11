@@ -7,7 +7,7 @@ from queries.supabase.decks import DeckQueries
 from cachetools import cached, TTLCache
 
 router = APIRouter(
-    prefix = "/api/decks",
+    prefix = "/api/v1/decks",
     tags   = ["Decks"]
 )
 

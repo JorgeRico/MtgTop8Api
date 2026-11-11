@@ -18,6 +18,9 @@ class TournamentQueries:
         conn   = await self.db.getSupabase()
         result = conn.table('tournaments').select('id, name, date, idLeague, players, leagues(isLegacy, year, name)').eq('id', str(idTournament)).order("id", desc=True).execute()
         
+        if result is None or len(result.data) == 0:
+            return None
+
         # data conversion - compatibillity with mysql old results
         item = {
             'id'         : result.data[0]['id'], 
