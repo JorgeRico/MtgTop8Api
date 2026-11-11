@@ -49,6 +49,9 @@ class LeagueQueries:
         conn   = await self.db.getSupabase()
         result = conn.table('tournaments').select('id, players').eq('idLeague', str(id)).execute()
 
+        if result is None or len(result.data) == 0:
+            return {'average': 0}
+
         total = 0
         for i in result.data:
             total += i['players']
@@ -70,8 +73,8 @@ class LeagueQueries:
                 'idLeague'   : i['idLeague'], 
                 'players'    : i['players'], 
                 'format'     : i['leagues']['isLegacy'],
-                'year'       : result.data[0]['leagues']['year'],
-                'leagueName' : result.data[0]['leagues']['name']
+                'year'       : i['leagues']['year'],
+                'leagueName' : i['leagues']['name']
             }
             values.append(item)
 
@@ -180,31 +183,18 @@ class LeagueQueries:
 
     # process data
     def groupAndReorderData(self, result, limit):
-        allCards = []
+        grouped = {}
         for item in result:
-            if item['name'] not in allCards:
-                allCards.append(item['name'])
+            name = item['name']
+            if name not in grouped:
+                grouped[name] = {"num": 0, "imgUrl": ""}
+            grouped[name]["num"] += int(item['num'])
+            grouped[name]["imgUrl"] = item['imgUrl']
 
-        finalResult = []
-        for item in allCards:
-            total = 0
-            img   = ""
-            
-            for xitem in result:
-                if xitem['name'] == item:
-                    total = total + int(xitem['num'])
-                    img   = xitem['imgUrl']
+        finalResult = [
+            {"name": name, "num": data["num"], "imgUrl": data["imgUrl"]}
+            for name, data in grouped.items()
+        ]
 
-            item = {
-                "name" : item,
-                "num"  : total,
-                "imgUrl" : img
-            }
-
-            finalResult.append(item)
-
-        values  = sorted(finalResult, key=lambda x: (x['num'], x['name']))
-        reverse = values[::-1]
-        result  = reverse[0:limit]
-
-        return result
+        finalResult.sort(key=lambda x: (x['num'], x['name']), reverse=True)
+        return finalResult[0:limit]

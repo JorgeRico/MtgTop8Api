@@ -7,14 +7,12 @@ from schemas.card import MAINDECK_CARD, SIDEBOARD_CARD
 from schemas.tournament import Tournament
 from queries.mysql.leagues import LeagueQueries
 from queries.supabase.leagues import LeagueQueries
-from cachetools import cached, TTLCache
+from cache import cached, cache
 
 router = APIRouter(
-    prefix = "/api/leagues",
+    prefix = "/api/v1/leagues",
     tags   = ["Leagues"]
 )
-
-cache = TTLCache(maxsize=100, ttl=300)  # Cache size of 100 items, expires after 5 minutes
 
 
 @cached(cache)
@@ -23,7 +21,7 @@ async def getAllLeagues() -> Any:
     query  = LeagueQueries()
     result = await query.getAllIdLeagues()
 
-    if result is None or id is None:
+    if result is None or len(result) == 0:
         raise HTTPException(status_code=HTTP_404, detail="Leagues not found")
 
     return result
@@ -34,12 +32,12 @@ async def getLeagueData() -> Any:
     query  = LeagueQueries()
     currentResult = await query.getCurrentLeagues()
 
-    if currentResult is None or id is None:
+    if currentResult is None or len(currentResult) == 0:
         raise HTTPException(status_code=HTTP_404, detail="League not found")
     
     pastResult = await query.getPastLeagues()
 
-    if pastResult is None or id is None:
+    if pastResult is None or len(pastResult) == 0:
         raise HTTPException(status_code=HTTP_404, detail="League not found")
 
     return { 'current' : currentResult, 'past' : pastResult }
@@ -50,7 +48,7 @@ async def getLeagueData() -> Any:
     query  = LeagueQueries()
     result = await query.getCurrentLeagues()
 
-    if result is None or id is None:
+    if result is None or len(result) == 0:
         raise HTTPException(status_code=HTTP_404, detail="League not found")
 
     return result
@@ -70,15 +68,13 @@ async def getLeagueData(page: int = 1, limit: int = 5) -> Any:
         raise HTTPException(status_code=HTTP_404, detail="League not found")
 
     return { 'leagues' : result, 'total' : total }
-
-
 @cached(cache)
 @router.get("/{id}", response_model=League, status_code=HTTP_200, description="League info")
 async def getLeagueData(id: int = Path(gt = 0, title="Id League", description="League resource identifier")) -> Any:
     query  = LeagueQueries()
     result = await query.getLeagueData(id)
 
-    if result is None or id is None:
+    if result is None:
         raise HTTPException(status_code=HTTP_404, detail="League not found")
 
     return result
@@ -89,7 +85,7 @@ async def getLeagueData(id: int = Path(gt = 0, title="Id League", description="L
     query  = LeagueQueries()
     result = await query.getLeagueAverageData(id)
 
-    if result is None or id is None:
+    if result is None:
         raise HTTPException(status_code=HTTP_404, detail="League not found")
 
     return result
