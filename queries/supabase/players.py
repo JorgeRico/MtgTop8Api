@@ -11,4 +11,4 @@ class PlayerQueries:
         conn   = await self.db.getSupabase()
         result = conn.table('players').select('id, name, position, idDeck').eq('id', str(id)).execute()
 
-        return result
+        return result.data
