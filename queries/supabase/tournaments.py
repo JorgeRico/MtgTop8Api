@@ -97,31 +97,18 @@ class TournamentQueries:
 
     # process data
     def groupAndReorderData(self, result, limit):
-        allCards = []
+        grouped = {}
         for item in result:
-            if item['name'] not in allCards:
-                allCards.append(item['name'])
+            name = item['name']
+            if name not in grouped:
+                grouped[name] = {"num": 0, "imgUrl": ""}
+            grouped[name]["num"] += int(item['num'])
+            grouped[name]["imgUrl"] = item['imgUrl']
 
-        finalResult = []
-        for item in allCards:
-            total = 0
-            img   = ""
+        finalResult = [
+            {"name": name, "num": data["num"], "imgUrl": data["imgUrl"]}
+            for name, data in grouped.items()
+        ]
 
-            for xitem in result:
-                if xitem['name'] == item:
-                    total = total + int(xitem['num'])
-                    img   = xitem['imgUrl']
-
-            item = {
-                "name"   : item,
-                "num"    : total,
-                "imgUrl" : img
-            }
-
-            finalResult.append(item)
-
-        values = sorted(finalResult, key=lambda x: (x['num'], x['name']))
-        reverse = values[::-1]
-        result  = reverse[0:limit]
-
-        return result
+        finalResult.sort(key=lambda x: (x['num'], x['name']), reverse=True)
+        return finalResult[0:limit]

@@ -7,14 +7,12 @@ from schemas.card import MAINDECK_CARD, SIDEBOARD_CARD
 from schemas.tournament import Tournament
 from queries.mysql.leagues import LeagueQueries
 from queries.supabase.leagues import LeagueQueries
-from cachetools import cached, TTLCache
+from cache import cached, cache
 
 router = APIRouter(
     prefix = "/api/v1/leagues",
     tags   = ["Leagues"]
 )
-
-cache = TTLCache(maxsize=100, ttl=300)  # Cache size of 100 items, expires after 5 minutes
 
 
 @cached(cache)

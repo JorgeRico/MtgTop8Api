@@ -2,16 +2,13 @@ from fastapi import APIRouter, HTTPException, Path
 from codes.codes import HTTP_200, HTTP_404
 from typing import Any
 from schemas.card import Card
-# from queries.mysql.decks import DeckQueries
 from queries.supabase.decks import DeckQueries
-from cachetools import cached, TTLCache
+from cache import cached, cache
 
 router = APIRouter(
     prefix = "/api/v1/decks",
     tags   = ["Decks"]
 )
-
-cache = TTLCache(maxsize=100, ttl=300)  # Cache size of 100 items, expires after 5 minutes
 
 
 @cached(cache)
